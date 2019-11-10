@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Axios from 'axios';
+import {Link} from 'react-router-dom';
 import './AlbumPage.scss';
 
 class AlbumPage extends Component {
@@ -16,7 +17,7 @@ class AlbumPage extends Component {
                 });
                 this.setState({
                     album: albumData
-                }, () => {console.log(this.state.album)});
+                });
                 
             })
             .catch(err => console.log(err));
@@ -34,9 +35,12 @@ class AlbumPage extends Component {
             <div> No albums found </div>
         );
         return (
-            <div className="container album-page">
-                <h2 className="text-center">Album Page</h2>                
+            <div className="container-fluid album-page">
+                <h2 className="text-center py-5">Album Details</h2>                
                     { albumDetails }
+                <Link to='/'>
+                    <button className="btn btn-outline-dark">go back</button>
+                </Link>
             </div>
         )
     } 

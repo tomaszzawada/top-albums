@@ -1,23 +1,43 @@
 import React, { Component } from 'react';
 import Album from '../../components/Album/Album';
 import Pagination from '../../components/Pagination/Pagination';
+import Categories from '../../components/Categories/Categories';
 import Axios from 'axios';
 
 class Albums extends Component {
     state = {
         albums: [],
         currentPage: 1,
-        albumsPerPage: 8
+        albumsPerPage: 8,
+        category: "all"
     }
 
     componentDidMount(){
-        Axios.get('https://itunes.apple.com/us/rss/topalbums/limit=100/json')
-        .then(res => {
-            this.setState({
-                albums: res.data.feed.entry
-            });
-        })
-        .catch(err => console.log(err));       
+        this.fetchResults();
+    }
+
+    fetchResults = () => {
+        if(this.state.category === "all") {
+            Axios.get('https://itunes.apple.com/us/rss/topalbums/limit=100/json')
+            .then((res) => {
+                this.setState({
+                    albums: res.data.feed.entry,
+                    currentPage: 1
+                });
+            })
+            .catch(err => console.log(err));
+        } else {
+            Axios.get('https://itunes.apple.com/us/rss/topalbums/limit=100/json')
+            .then((res) => {
+                const albums = res.data.feed.entry.filter((album) => {
+                    return album.category.attributes.label.toLowerCase() === this.state.category
+                });
+                this.setState({
+                    albums: albums,
+                    currentPage: 1
+                });
+            })
+        }  
     }
 
     paginate = (pageNumber) => {
@@ -26,8 +46,15 @@ class Albums extends Component {
         });
     }
 
+    handleCategory = (e) => {
+        const category = e.target.value.toLowerCase();
+        this.setState({
+            category: category
+        }, () => this.fetchResults());
+    }
+
     render() {
-        const { albums, currentPage, albumsPerPage } = this.state;
+        const { albums, currentPage, albumsPerPage, category } = this.state;
         const indexOfLastAlbum = currentPage * albumsPerPage;
         const indexOfFirstAlbum = indexOfLastAlbum - albumsPerPage;
         const currentAlbums = albums.slice(indexOfFirstAlbum, indexOfLastAlbum);
@@ -49,6 +76,7 @@ class Albums extends Component {
         return (
             <section className="albums">
                 <div className="container my-5">
+                    <Categories albums={albums} category={category} handleCategory={this.handleCategory} />
                     <Pagination albumsPerPage={albumsPerPage} totalAlbums={albums.length} paginate={this.paginate} />
                     <div className="row">
                         { albumList }
@@ -59,4 +87,4 @@ class Albums extends Component {
     }
 }
 
-export default Albums
+export default Albums;

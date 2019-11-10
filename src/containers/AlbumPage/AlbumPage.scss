@@ -1,4 +1,8 @@
-
+@import "../../styles/_variables";
+.album-page{
+    height: calc(100vh - 56px);
+    background: $light-txt;
+}
 .album-page > .card {
     max-width: 400px;
     border: none;
