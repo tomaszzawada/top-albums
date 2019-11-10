@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import Album from '../../components/Album/Album';
+import Pagination from '../../components/Pagination/Pagination';
 import Axios from 'axios';
 
 class Albums extends Component {
     state = {
-        albums: []
+        albums: [],
+        currentPage: 1,
+        albumsPerPage: 8
     }
 
     componentDidMount(){
@@ -17,10 +20,20 @@ class Albums extends Component {
         .catch(err => console.log(err));
     }
 
+    paginate = (pageNumber) => {
+        this.setState({
+            currentPage: pageNumber
+        });
+    }
+
     render() {
-        const { albums } = this.state;
-        const albumList = albums.length ? (
-            albums.map(album => {
+        const { albums, currentPage, albumsPerPage } = this.state;
+        const indexOfLastAlbum = currentPage * albumsPerPage;
+        const indexOfFirstAlbum = indexOfLastAlbum - albumsPerPage;
+        const currentAlbums = albums.slice(indexOfFirstAlbum, indexOfLastAlbum);
+
+        const albumList = currentAlbums.length ? (
+            currentAlbums.map(album => {
                 return <Album
                     key={album.id.attributes["im:id"]}
                     title={album["im:name"].label}
@@ -35,6 +48,7 @@ class Albums extends Component {
         return (
             <section className="albums">
                 <div className="container my-5">
+                    <Pagination albumsPerPage={albumsPerPage} totalAlbums={albums.length} paginate={this.paginate} />
                     <div className="row">
                         { albumList }
                     </div>
