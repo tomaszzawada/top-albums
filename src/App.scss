@@ -1,0 +1,7 @@
+@import "~bootstrap/scss/bootstrap";
+@import "styles/_variables";
+
+body {
+    background-color: $background-dark;
+    color: $light-txt;
+}
