@@ -17,7 +17,7 @@ class Albums extends Component {
                 albums: res.data.feed.entry
             });
         })
-        .catch(err => console.log(err));
+        .catch(err => console.log(err));       
     }
 
     paginate = (pageNumber) => {
@@ -36,6 +36,7 @@ class Albums extends Component {
             currentAlbums.map(album => {
                 return <Album
                     key={album.id.attributes["im:id"]}
+                    id={album.id.attributes["im:id"]}
                     title={album["im:name"].label}
                     artist={album["im:artist"].label}
                     image={album["im:image"][2].label}

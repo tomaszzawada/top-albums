@@ -1,0 +1,9 @@
+.album.card {
+    max-width: 250px;
+    height: 400px;
+    border: none;
+    border-radius: 0;
+    .card-img-top {
+        border-radius: 0;
+    }
+}
