@@ -20,30 +20,6 @@ class Albums extends Component {
         this.fetchResults();
     }
 
-    // fetchResults = () => {
-    //     if(this.state.category === "all") {
-    //         Axios.get('https://itunes.apple.com/us/rss/topalbums/limit=100/json')
-    //         .then((res) => {
-    //             this.setState({
-    //                 albums: res.data.feed.entry,
-    //                 currentPage: 1
-    //             });
-    //         })
-    //         .catch(err => console.log(err));
-    //     } else {
-    //         Axios.get('https://itunes.apple.com/us/rss/topalbums/limit=100/json')
-    //         .then((res) => {
-    //             const albums = res.data.feed.entry.filter((album) => {
-    //                 return album.category.attributes.label.toLowerCase() === this.state.category
-    //             });
-    //             this.setState({
-    //                 albums: albums,
-    //                 currentPage: 1
-    //             });
-    //         })
-    //     }  
-    // }
-
     fetchResults = () => {
         if(this.state.query === "" && this.state.category === "all") {
             Axios.get('https://itunes.apple.com/us/rss/topalbums/limit=100/json')
