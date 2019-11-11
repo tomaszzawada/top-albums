@@ -8,7 +8,7 @@ class AlbumPage extends Component {
         album: []
     }
 
-    componentDidMount(){
+    componentDidMount(){        
         let id = this.props.match.params.album_id;
         Axios.get('https://itunes.apple.com/us/rss/topalbums/limit=100/json')
             .then((res) => {

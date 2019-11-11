@@ -20,10 +20,9 @@ class Categories extends Component {
             .catch(err => console.log(err));
     }
 
-
     render(){
         return (
-            <div className="input-group mb-3">
+            <div className="input-group">
                 <div className="input-group-prepend">
                     <label className="input-group-text" htmlFor="inputGroupSelect01">Categories</label>
                 </div>

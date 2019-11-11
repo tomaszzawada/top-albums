@@ -1,23 +1,51 @@
 import React, { Component } from 'react';
+import Axios from 'axios';
 import Album from '../../components/Album/Album';
 import Pagination from '../../components/Pagination/Pagination';
 import Categories from '../../components/Categories/Categories';
-import Axios from 'axios';
+import Searchbar from '../../components/Searchbar/Searchbar';
+import './Albums.scss';
+
 
 class Albums extends Component {
     state = {
         albums: [],
         currentPage: 1,
         albumsPerPage: 8,
-        category: "all"
+        category: "all",
+        query: ""
     }
 
     componentDidMount(){
         this.fetchResults();
     }
 
+    // fetchResults = () => {
+    //     if(this.state.category === "all") {
+    //         Axios.get('https://itunes.apple.com/us/rss/topalbums/limit=100/json')
+    //         .then((res) => {
+    //             this.setState({
+    //                 albums: res.data.feed.entry,
+    //                 currentPage: 1
+    //             });
+    //         })
+    //         .catch(err => console.log(err));
+    //     } else {
+    //         Axios.get('https://itunes.apple.com/us/rss/topalbums/limit=100/json')
+    //         .then((res) => {
+    //             const albums = res.data.feed.entry.filter((album) => {
+    //                 return album.category.attributes.label.toLowerCase() === this.state.category
+    //             });
+    //             this.setState({
+    //                 albums: albums,
+    //                 currentPage: 1
+    //             });
+    //         })
+    //     }  
+    // }
+
     fetchResults = () => {
-        if(this.state.category === "all") {
+        if(this.state.query === "" && this.state.category === "all") {
             Axios.get('https://itunes.apple.com/us/rss/topalbums/limit=100/json')
             .then((res) => {
                 this.setState({
@@ -26,18 +54,29 @@ class Albums extends Component {
                 });
             })
             .catch(err => console.log(err));
-        } else {
+        } else if(this.state.query !== "" && this.state.category === "all"){
             Axios.get('https://itunes.apple.com/us/rss/topalbums/limit=100/json')
             .then((res) => {
                 const albums = res.data.feed.entry.filter((album) => {
-                    return album.category.attributes.label.toLowerCase() === this.state.category
+                    return album.title.label.toLowerCase().includes(this.state.query)
                 });
                 this.setState({
                     albums: albums,
                     currentPage: 1
                 });
             })
-        }  
+        } else {
+            Axios.get('https://itunes.apple.com/us/rss/topalbums/limit=100/json')
+            .then((res) => {
+                const albums = res.data.feed.entry.filter((album) => {
+                    return album.title.label.toLowerCase().includes(this.state.query) && album.category.attributes.label.toLowerCase() === this.state.category
+                });
+                this.setState({
+                    albums: albums,
+                    currentPage: 1
+                });
+            })
+        }
     }
 
     paginate = (pageNumber) => {
@@ -51,6 +90,22 @@ class Albums extends Component {
         this.setState({
             category: category
         }, () => this.fetchResults());
+    }
+
+    handleSearch = (e) => {
+        // e.preventDefault();
+        const query = e.target.value.toLowerCase();
+        // e.target.reset();
+        this.setState({
+            query: query
+        }, () => this.fetchResults());
+    }
+
+    showAll = () => {
+        this.setState({
+            category: "all",
+            query: ""
+        },() => {this.fetchResults()});
     }
 
     render() {
@@ -70,13 +125,25 @@ class Albums extends Component {
                 />
             })
         ) : (
-            <div className="center">Loading</div>
+            <div>
+                <div className="no-albums center">No albums found</div>
+            </div>
         );
 
         return (
             <section className="albums">
                 <div className="container my-5">
-                    <Categories albums={albums} category={category} handleCategory={this.handleCategory} />
+                    <div className="row my-3">
+                        <div className="col-md-2 my-1">
+                            <button onClick={this.showAll} className="btn btn-outline-dark float-right">Reset filters</button>
+                        </div>
+                        <div className="col-md-5 my-1">
+                            <Categories albums={albums} category={category} handleCategory={this.handleCategory} />
+                        </div>
+                        <div className="col-md-5 my-1">
+                            <Searchbar handleSearch={this.handleSearch} />
+                        </div>
+                    </div>
                     <Pagination albumsPerPage={albumsPerPage} totalAlbums={albums.length} paginate={this.paginate} />
                     <div className="row">
                         { albumList }
