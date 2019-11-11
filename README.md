@@ -1,6 +1,8 @@
 # Top Albums
 React app that shows top 100 albums from itunes rss.
 
+GH Pages: https://tomaszzawada.github.io/top-albums
+
 ### Done:
 - pagination
 - filtering by categories
