@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { HashRouter, Route, Switch } from 'react-router-dom';
 import './App.scss';
 import Nav from './components/Nav/Nav';
 import Home from './components/Home/Home';
@@ -7,13 +7,15 @@ import AlbumPage from './containers/AlbumPage/AlbumPage';
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter basename='/'>
       <div className="App">
         <Nav />
-        <Route exact path='/' component={Home} />
-        <Route path='/:album_id' component={AlbumPage} />
+        <Switch>
+          <Route exact path='/' component={Home} />
+          <Route path='/:album_id' component={AlbumPage} />
+        </Switch>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
